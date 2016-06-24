@@ -1,0 +1,15 @@
+{
+    "name": "froala-instagram",
+    "version": "1.0.0",
+    "description": "A plugin to embed instagram content in the Froala WYSIWYG editor",
+    "main": [
+        "js/plugins/instagram.min.js"
+    ],
+    "license": "MIT",
+    "keywords": [
+        "froala", "plugins", "instagram"
+    ],
+    "dependencies": {
+        "jquery": ">=1.11.0"
+    }
+}
