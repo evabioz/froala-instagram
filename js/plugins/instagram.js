@@ -67,7 +67,8 @@
       if (editor.opts.instagramHelpText){
         input_layer += '<span class="fr-small-text">'+editor.language.translate(editor.opts.instagramHelpText)+'</span>';
       }
-      input_layer += '<div class="fr-input-line"><input name="href" type="text" class="fr-link-attr" placeholder="https://www.instagram.com/p/" tabIndex="' + (++tab_idx) + '"></div>';
+      input_layer += '<div class="fr-input-line"><input name="href" type="text" placeholder="https://www.instagram.com/p/" tabIndex="' + (++tab_idx) + '"></div>';
+      input_layer += '<div class="fr-checkbox-line"><input name="captioned" type="checkbox" checked="checked" /><label>With Captioned</label></div>';
       input_layer += '<div class="fr-action-buttons"><bfasdutton class="fr-command fr-submit" data-cmd="linkInstagramInsert" href="#" tabIndex="' + (++tab_idx) + '" type="button">' + editor.language.translate('Insert') + '</bfasdutton></div></div>';
 
       // Load popup template.
@@ -115,10 +116,12 @@
     function resetPopup(){
       var $popup = editor.popups.get('instagram.insert');
       var $errors = $popup.find('ul.errorlist');
-      var $input = $popup.find('input.fr-link-attr[type="text"][name="href"]');
+      var $input = $popup.find('input[type="text"][name="href"]');
+      var $checkbox = $popup.find('input[type="checkbox"][name="captioned"]');
       $errors.hide();
       $errors.html('');
       $input.val('').trigger('change');
+      $checkbox.prop('checked', true).trigger('checked');
     }
 
     // Hide the custom popup.
@@ -129,14 +132,14 @@
     function showError(error){
       var $popup = editor.popups.get('instagram.insert');
       var $errors = $popup.find('ul.errorlist');
-      var $input = $popup.find('input.fr-link-attr[type="text"][name="href"]');
+      var $input = $popup.find('input[type="text"][name="href"]');
       $errors.html('<li>'+error+'</li>').fadeIn();
       $input.one('keyup', function(){
         $errors.fadeOut();
       });
     }
 
-    function insert(url){
+    function insert(url, captioned){
       // Make sure we have focus.
       editor.events.focus(true);
       editor.selection.restore();
@@ -164,10 +167,8 @@
         dataType: "jsonp",
         data: { url: matches[0] },
         success: function(response) {
-          var url = matches[0] + '/embed/?v=' + editor.opts.instagramEmbedVersion,
-              width = response['thumbnail_width'],
-              height = response['thumbnail_height'];
-          var onload = "var src = {el: $(this), width: " + width + ", height: " + height + "};$(window).resize(function(e){src.el.height((src.el.width() / src.width) * src.height + 90);}).trigger('resize')";
+          var url = matches[0] + (captioned ? '/embed/captioned/?v=' : '/embed/?v=') + editor.opts.instagramEmbedVersion;
+          var onload = "$(window).on('message',$.proxy(function(e){var obj=$.parseJSON(e.originalEvent.data);if(this.contentWindow!==e.originalEvent.source)return;if(obj.type==='MEASURE')$(this).height(obj.details.height||500);},this))";
           editor.html.insert('<iframe onload="' + onload + '" class="fr-instagram" scrolling="no" frameborder="0" allowtransparency="true" src="' + url + '" style="border: 0; margin: 0; max-width: 658px; width: 100%; display: block; padding: 0; background: rgb(255, 255, 255);"></iframe><p><br></p>', true);
           var $instagram_embed = editor.$el.find('.fr-instagram');
           editor.popups.hide('instagram.insert');
@@ -180,10 +181,11 @@
 
     function insertCallback () {
       var $popup = editor.popups.get('instagram.insert');
-      var url = $popup.find('input.fr-link-attr[type="text"][name="href"]').val();
+      var url = $popup.find('input[type="text"][name="href"]').val();
+      var captioned = $popup.find('input[type="checkbox"][name="captioned"]').is(':checked');
 
       var t = $(editor.original_window).scrollTop();
-      insert(url);
+      insert(url, captioned);
       $(editor.original_window).scrollTop(t);
     }
 
