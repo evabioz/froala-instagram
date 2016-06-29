@@ -46,6 +46,10 @@
     instagramHelpText: 'Paste a URL to generate code'
   });
 
+  $.merge($.FroalaEditor.DEFAULTS.htmlAllowedAttrs, [
+    'onload'
+  ]);
+
   // The custom popup is defined inside a plugin (new or existing).
   $.FroalaEditor.PLUGINS.instagram = function (editor) {
 
