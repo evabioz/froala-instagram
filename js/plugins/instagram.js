@@ -73,7 +73,7 @@
       }
       input_layer += '<div class="fr-input-line"><input name="href" type="text" placeholder="https://www.instagram.com/p/" tabIndex="' + (++tab_idx) + '"></div>';
       input_layer += '<div class="fr-checkbox-line"><input name="captioned" type="checkbox" checked="checked" /><label>With Captioned</label></div>';
-      input_layer += '<div class="fr-action-buttons"><bfasdutton class="fr-command fr-submit" data-cmd="linkInstagramInsert" href="#" tabIndex="' + (++tab_idx) + '" type="button">' + editor.language.translate('Insert') + '</bfasdutton></div></div>';
+      input_layer += '<div class="fr-action-buttons"><button class="fr-command fr-submit" data-cmd="linkInstagramInsert" href="#" tabIndex="' + (++tab_idx) + '" type="button">' + editor.language.translate('Insert') + '</button></div></div>';
 
       // Load popup template.
       var template = {
