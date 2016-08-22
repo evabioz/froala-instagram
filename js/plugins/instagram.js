@@ -165,20 +165,13 @@
         return false;
       }
 
-      // Get article information
-      $.ajax({
-        url: "https://api.instagram.com/oembed/",
-        dataType: "jsonp",
-        data: { url: matches[0] },
-        success: function(response) {
-          var url = matches[0] + (captioned ? '/embed/captioned/?v=' : '/embed/?v=') + editor.opts.instagramEmbedVersion;
-          var onload = "$(window).on('message',$.proxy(function(e){if(this.contentWindow!==e.originalEvent.source)return;var obj=$.parseJSON(e.originalEvent.data);if(obj.type==='MEASURE')$(this).height(obj.details.height||500);},this))";
-          editor.html.insert('<iframe onload="' + onload + '" class="fr-instagram" scrolling="no" frameborder="0" allowtransparency="true" src="' + url + '" style="border: 0; margin: 0; max-width: 658px; width: 100%; display: block; padding: 0; background: rgb(255, 255, 255);"></iframe><p><br></p>', true);
-          var $instagram_embed = editor.$el.find('.fr-instagram');
-          editor.popups.hide('instagram.insert');
-          editor.events.trigger('instagram.inserted', [$instagram_embed, matches[0], matches[3]]);
-        }
-      });
+      // Rendering
+      var url = matches[0] + (captioned ? '/embed/captioned/?v=' : '/embed/?v=') + editor.opts.instagramEmbedVersion;
+      var onload = "$(window).on('message',$.proxy(function(e){if(this.contentWindow!==e.originalEvent.source)return;var obj=$.parseJSON(e.originalEvent.data);if(obj.type==='MEASURE')$(this).height(obj.details.height||500);},this))";
+      editor.html.insert('<iframe onload="' + onload + '" class="fr-instagram" scrolling="no" frameborder="0" allowtransparency="true" src="' + url + '" style="border: 0; margin: 0; max-width: 658px; width: 100%; display: block; padding: 0; background: rgb(255, 255, 255);"></iframe><p><br></p>', true);
+      var $instagram_embed = editor.$el.find('.fr-instagram');
+      editor.popups.hide('instagram.insert');
+      editor.events.trigger('instagram.inserted', [$instagram_embed, matches[0], matches[3]]);
 
       return false;
     }
